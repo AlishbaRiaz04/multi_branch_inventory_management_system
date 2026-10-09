@@ -1,0 +1,42 @@
+{
+    "products": {
+        "P001": {"name": "Panadol", "category": "Medicine", "price": 100, "cost": 70, "reorder_level": 10},
+        "P002": {"name": "Vitamin C", "category": "Supplement", "price": 250, "cost": 180, "reorder_level": 5}
+    },
+    "branches": {
+        "B001": {"name": "Lahore Branch", "inventory": {"P001": 50, "P002": 20}},
+        "B002": {"name": "Empty Branch", "inventory": {}}
+    },
+    "transactions": [
+        {"id": "T001", "type": "sale", "branch": "B001", "product": "P001", "quantity": 5},
+        {"id": "T001", "type": "sale", "branch": "B001", "product": "P001", "quantity": 1},
+        {"id": "T002", "type": "sale", "branch": "B001", "product": "P001", "quantity": -3},
+        {"id": "T003", "type": "sale", "branch": "B001", "product": "P001", "quantity": 0},
+        {"id": "T004", "type": "sale", "branch": "B001", "product": "P001", "quantity": 500},
+        {"id": "T005", "type": "sale", "branch": "B001", "product": "P404", "quantity": 1},
+        {"id": "T006", "type": "sale", "branch": "B404", "product": "P001", "quantity": 1},
+        {"id": "T007", "type": "refund", "branch": "B001", "product": "P001", "quantity": 1},
+        {"id": "T008", "type": "sale"},
+        {"id": "T009", "type": "customer_return", "branch": "B001", "product": "P001", "quantity": 2},
+        {"id": "T010", "type": "customer_return", "branch": "B001", "product": "P001", "quantity": 4},
+        {"id": "T011", "type": "supplier_return", "branch": "B001", "product": "P001", "quantity": 999},
+        {"id": "T012", "type": "transfer", "from_branch": "B001", "to_branch": "B001", "product": "P001", "quantity": 1},
+        {"id": "T013", "type": "transfer", "from_branch": "B001", "to_branch": "B777", "product": "P001", "quantity": 1},
+        {"id": "T014", "type": "transfer", "from_branch": "B001", "to_branch": "B002", "product": "P001", "quantity": 10},
+        {"id": "T015", "type": "sale", "branch": "B001", "product": "P001", "quantity": "five"},
+        "not a dictionary",
+        {"id": ["bad"], "type": "sale", "branch": "B001", "product": ["x"], "quantity": 1}
+    ],
+    "physical_stock": {
+        "B001": {"P001": 40, "P002": 21, "P555": 3},
+        "B999": {"P001": 1}
+    },
+    "batches": [
+        {"batch": "BAT001", "product": "P001", "branch": "B001", "quantity": 20, "expiry_days": 0},
+        {"batch": "BAT001", "product": "P001", "branch": "B001", "quantity": 5, "expiry_days": 50},
+        {"batch": "BAT002", "product": "P001", "branch": "B001", "quantity": 20, "expiry_days": -4},
+        {"batch": "BAT003", "product": "P777", "branch": "B001", "quantity": 20, "expiry_days": 10},
+        {"batch": "BAT004", "product": "P001", "branch": "B001", "quantity": 20},
+        {"batch": "BAT005", "product": "P002", "branch": "B001", "quantity": 8, "expiry_days": 7}
+    ]
+}

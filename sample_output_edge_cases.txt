@@ -1,0 +1,97 @@
+==================================================
+          INVENTORY MANAGEMENT DASHBOARD          
+==================================================
+Branches:  2
+Products:  2
+
+Transactions
+--------------------------------------------------
+Processed:  18
+Successful:  3
+Rejected:  15
+
+Inventory
+--------------------------------------------------
+Total Units:  67
+Inventory Cost Value: $ 6890
+Potential Sales Value: $ 9700
+Potential Profit: $ 2810
+
+Sales
+--------------------------------------------------
+Revenue: $ 500
+Cost: $ 350
+Gross Profit: $ 150
+Top Product:  P001 (Panadol)
+Top Branch:  B001
+
+Stock Alerts
+--------------------------------------------------
+Low Stock Products:  2 ['P001', 'P002']
+Critical Expiry Batches:  1 ['BAT005']
+Expired Batches:  1 ['BAT001']
+
+Reconciliation
+--------------------------------------------------
+Matched:  0
+Shortages:  0
+Excess:  2
+
+
+TRANSACTION LOG
+--------------------------------------------------
+T001 sale SUCCESS - Transaction processed successfully
+T001 sale REJECTED - Duplicate transaction ID: T001
+T002 sale REJECTED - Quantity can't be negative
+T003 sale REJECTED - Quantity can't be zero
+T004 sale REJECTED - Insufficient stock. Available: 45 - Requested quantities: 500
+T005 sale REJECTED - Invalid Product: P404
+T006 sale REJECTED - Invalid branch: B404
+T007 refund REJECTED - Invalid transaction type: refund
+T008 sale REJECTED - Missing fields: ['branch', 'product', 'quantity']
+T009 customer_return SUCCESS - Transaction processed successfully
+T010 customer_return REJECTED - Return more than sold. Returnable: 3 - Requested quantities: 4
+T011 supplier_return REJECTED - Insufficient stock. Available: 47 - Requested quantities: 999
+T012 transfer REJECTED - Source and destination branch are same branch
+T013 transfer REJECTED - Invalid destination branch: B777
+T014 transfer SUCCESS - Transaction processed successfully
+T015 sale REJECTED - Quantity must be a whole number
+None None REJECTED - Transaction must be a dictionary
+['bad'] sale REJECTED - Transaction id must be text
+
+STOCK VALUE PER BRANCH
+--------------------------------------------------
+Lahore Branch | Units: 57 | Cost: 6190 | Sales: 8700 | Profit: 2510
+Empty Branch | Units: 10 | Cost: 700 | Sales: 1000 | Profit: 300
+COMPANY TOTAL | Units: 67 | Cost: 6890 | Sales: 9700 | Profit: 2810
+
+SALES ANALYTICS
+--------------------------------------------------
+Units sold:  5
+Best-selling product:  P001
+Worst-selling product:  P001
+Highest-revenue product:  P001
+Highest-profit product:  P001
+Highest-revenue branch:  B001
+
+REORDER REPORT
+--------------------------------------------------
+Empty Branch - Panadol stock: 10 reorder level: 10
+Empty Branch - Vitamin C stock: 0 reorder level: 5
+
+EXPIRY REPORT
+--------------------------------------------------
+Lahore Branch
+   BAT001 P001 qty: 20 days: 0 -> Expired
+   BAT005 P002 qty: 8 days: 7 -> Critical
+Rejected batch BAT001 - Duplicate batch Id
+Rejected batch BAT002 - Expiry days must not be negative
+Rejected batch BAT003 - Unknown batch product: P777
+Rejected batch BAT004 - Missing fields: ['expiry_days']
+
+RECONCILIATION
+--------------------------------------------------
+B001 P001 system: 37 physical: 40 difference: -3 EXCESS
+B001 P002 system: 20 physical: 21 difference: -1 EXCESS
+B001 P555 - invalid product
+B999 None - invalid branch

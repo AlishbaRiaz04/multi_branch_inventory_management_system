@@ -1,0 +1,42 @@
+[
+    {
+        "transaction_id": "T001",
+        "transaction_status": "SUCCESS",
+        "reason": "Transaction processed successfully",
+        "product_id": "P001",
+        "branch_id": "B001",
+        "to_branch_id": null,
+        "quantity": 5,
+        "transaction_type": "sale"
+    },
+    {
+        "transaction_id": "T002",
+        "transaction_status": "SUCCESS",
+        "reason": "Transaction processed successfully",
+        "product_id": "P002",
+        "branch_id": "B002",
+        "to_branch_id": null,
+        "quantity": 20,
+        "transaction_type": "purchase"
+    },
+    {
+        "transaction_id": "T003",
+        "transaction_status": "SUCCESS",
+        "reason": "Transaction processed successfully",
+        "product_id": "P004",
+        "branch_id": "B003",
+        "to_branch_id": null,
+        "quantity": 25,
+        "transaction_type": "sale"
+    },
+    {
+        "transaction_id": "T004",
+        "transaction_status": "SUCCESS",
+        "reason": "Transaction processed successfully",
+        "product_id": "P001",
+        "branch_id": "B001",
+        "to_branch_id": "B002",
+        "quantity": 10,
+        "transaction_type": "transfer"
+    }
+]

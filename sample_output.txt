@@ -1,0 +1,81 @@
+==================================================
+          INVENTORY MANAGEMENT DASHBOARD          
+==================================================
+Branches:  3
+Products:  4
+
+Transactions
+--------------------------------------------------
+Processed:  4
+Successful:  4
+Rejected:  0
+
+Inventory
+--------------------------------------------------
+Total Units:  570
+Inventory Cost Value: $ 43675
+Potential Sales Value: $ 66750
+Potential Profit: $ 23075
+
+Sales
+--------------------------------------------------
+Revenue: $ 1750
+Cost: $ 975
+Gross Profit: $ 775
+Top Product:  P004 (Face Mask)
+Top Branch:  B003
+
+Stock Alerts
+--------------------------------------------------
+Low Stock Products:  No Products low in stock
+Critical Expiry Batches:  1 ['BAT003']
+Expired Batches:  None
+
+Reconciliation
+--------------------------------------------------
+Matched:  2
+Shortages:  1
+Excess:  1
+
+
+TRANSACTION LOG
+--------------------------------------------------
+T001 sale SUCCESS - Transaction processed successfully
+T002 purchase SUCCESS - Transaction processed successfully
+T003 sale SUCCESS - Transaction processed successfully
+T004 transfer SUCCESS - Transaction processed successfully
+
+STOCK VALUE PER BRANCH
+--------------------------------------------------
+Lahore Branch | Units: 170 | Cost: 11550 | Sales: 18000 | Profit: 6450
+Islamabad Branch | Units: 155 | Cost: 14700 | Sales: 22000 | Profit: 7300
+Karachi Branch | Units: 245 | Cost: 17425 | Sales: 26750 | Profit: 9325
+COMPANY TOTAL | Units: 570 | Cost: 43675 | Sales: 66750 | Profit: 23075
+
+SALES ANALYTICS
+--------------------------------------------------
+Units sold:  30
+Best-selling product:  P004
+Worst-selling product:  P001
+Highest-revenue product:  P004
+Highest-profit product:  P004
+Highest-revenue branch:  B003
+
+REORDER REPORT
+--------------------------------------------------
+No products at or below reorder level
+
+EXPIRY REPORT
+--------------------------------------------------
+Lahore Branch
+   BAT001 P001 qty: 20 days: 15 -> Expiring Soon
+   BAT002 P001 qty: 30 days: 120 -> Safe
+Islamabad Branch
+   BAT003 P002 qty: 10 days: 5 -> Critical
+
+RECONCILIATION
+--------------------------------------------------
+B001 P001 system: 35 physical: 43 difference: -8 EXCESS
+B001 P002 system: 20 physical: 20 difference: 0 MATCHED
+B001 P003 system: 15 physical: 14 difference: 1 SHORTAGE
+B001 P004 system: 100 physical: 100 difference: 0 MATCHED

@@ -1,0 +1,35 @@
+PASS negative quantity
+PASS zero quantity
+PASS text quantity
+PASS insufficient stock
+PASS invalid product
+PASS invalid branch
+PASS invalid type
+PASS missing fields
+PASS not a dictionary
+PASS duplicate id
+PASS same branch transfer
+PASS invalid source branch
+PASS invalid destination branch
+PASS transfer too big
+PASS transfer to empty branch
+PASS supplier return over stock
+PASS sale from empty inventory
+PASS purchase into empty inventory
+PASS return more than sold
+PASS return exactly what is left
+PASS return with no sale
+PASS empty transaction list
+PASS stock changes
+PASS rejected transaction leaves stock alone
+PASS expiry
+PASS reorder
+PASS stock value
+PASS sales report
+PASS reconciliation
+PASS load_data missing file
+PASS edge_cases_input.json runs without crashing
+PASS assignment sample data
+PASS everything empty
+
+ALL TESTS PASSED
