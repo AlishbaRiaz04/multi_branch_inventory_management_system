@@ -1,4 +1,6 @@
+"""Optional typed models. Runtime processing uses validated dictionaries for JSON compatibility."""
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
 class Product:
@@ -18,9 +20,12 @@ class Branch:
 @dataclass
 class Transaction:
     id: str
-    type:str
+    type: str
     product: str
     quantity: int
-    branch: str | None= None
-    from_branch: str | None= None
-    to_branch: str | None= None
+    branch: Optional[str] = None
+    from_branch: Optional[str] = None
+    to_branch: Optional[str] = None
+    original_sale_id: Optional[str] = None
+    batch: Optional[str] = None
+    expiry_days: Optional[int] = None

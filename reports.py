@@ -52,67 +52,84 @@ def generate_reorder_report(products, branches):
 
 
 def calculate_stock_value(products, branches):
-    branch_values={}
+    branch_values = {}
+
     for branch_id, branch_detail in branches.items():
-        units=0
-        cost_value=0
-        sales_value=0
+        units = 0
+        cost_value = 0
+        sales_value = 0
+
         for product_id, quantity in branch_detail["inventory"].items():
             if product_id not in products:
-                continue
-            units+=quantity
-            cost_value+=products[product_id]["cost"]*quantity
-            sales_value+=products[product_id]["price"]*quantity
-        branch_values[branch_id]={
+                raise ValueError(f"Unknown inventory SKU: {product_id}")
+
+            units += quantity
+            cost_value += products[product_id]["cost"] * quantity
+            sales_value += products[product_id]["price"] * quantity
+
+        branch_values[branch_id] = {
             "units": units,
             "cost_value": cost_value,
             "sales_value": sales_value,
-            "profit": sales_value-cost_value
+            "profit": sales_value - cost_value,
         }
 
-    # company-wide totals
-    totals={
+    totals = {
         "units": sum(v["units"] for v in branch_values.values()),
         "cost_value": sum(v["cost_value"] for v in branch_values.values()),
         "sales_value": sum(v["sales_value"] for v in branch_values.values()),
-        "profit": sum(v["profit"] for v in branch_values.values())
+        "profit": sum(v["profit"] for v in branch_values.values()),
     }
-    # *args used here: units per product for the whole company
-    company_stock=combine_inventories(*[b["inventory"] for b in branches.values()])
+
+    company_stock = combine_inventories(
+        *[branch["inventory"] for branch in branches.values()]
+    )
     return branch_values, totals, company_stock
 
 
 def generate_sales_report(processed_transactions, products):
-    revenue=0
-    cost=0
-    gross_profit=0
-    units_sold={}
-    revenue_by_product={}
-    profit_by_product={}
-    revenue_by_branch={}
+    revenue = 0
+    cost = 0
+    gross_profit = 0
+
+    units_sold = {product_id: 0 for product_id in products}
+    revenue_by_product = {product_id: 0 for product_id in products}
+    profit_by_product = {product_id: 0 for product_id in products}
+    revenue_by_branch = {}
 
     for transaction in processed_transactions:
-        if transaction["transaction_type"]=="sale" and transaction["transaction_status"]=="SUCCESS":
-            sale=process_sales(transaction, products)
-            product_id=sale["product_id"]
-            branch_id=sale["branch_id"]
-            revenue+=sale["revenue"]
-            cost+=sale["cost"]
-            gross_profit+=sale["gross_profit"]
-            units_sold[product_id]=units_sold.get(product_id, 0)+sale["quantity"]
-            revenue_by_product[product_id]=revenue_by_product.get(product_id, 0)+sale["revenue"]
-            profit_by_product[product_id]=profit_by_product.get(product_id, 0)+sale["gross_profit"]
-            revenue_by_branch[branch_id]=revenue_by_branch.get(branch_id, 0)+sale["revenue"]
+        if transaction.get("transaction_status") != "SUCCESS":
+            continue
 
-    # LEGB: `highest` is Local, `data` comes in as a parameter, and `sum`/`max` are Built-in.
-    # (units_sold etc. are Enclosing names of generate_sales_report; nothing is Global here.)
+        if transaction.get("transaction_type") not in ("sale", "customer_return"):
+            continue
+
+        sale = process_sales(transaction, products)
+        product_id = sale["product_id"]
+        branch_id = sale["branch_id"]
+
+        revenue += sale["revenue"]
+        cost += sale["cost"]
+        gross_profit += sale["gross_profit"]
+
+        if transaction["transaction_type"] == "sale":
+            units_sold[product_id] += sale["quantity"]
+        else:
+            units_sold[product_id] -= sale["quantity"]
+
+        revenue_by_product[product_id] += sale["revenue"]
+        profit_by_product[product_id] += sale["gross_profit"]
+        revenue_by_branch[branch_id] = (
+            revenue_by_branch.get(branch_id, 0) + sale["revenue"]
+        )
+
     def highest(data):
-        if len(data)==0:
+        if not data:
             return None
         return max(data, key=lambda key: data[key])
 
     def lowest(data):
-        if len(data)==0:
+        if not data:
             return None
         return min(data, key=lambda key: data[key])
 
@@ -125,11 +142,11 @@ def generate_sales_report(processed_transactions, products):
         "worst_selling": lowest(units_sold),
         "top_revenue_product": highest(revenue_by_product),
         "top_profit_product": highest(profit_by_product),
-        "top_branch": highest(revenue_by_branch)
+        "top_branch": highest(revenue_by_branch),
     }
 
 
-def generate_inventory_dashbaord(products, branches, transactions, physical_stock, batches):
+def generate_inventory_dashboard(products, branches, transactions, physical_stock, batches):
 
 
     total_branches=len(branches)

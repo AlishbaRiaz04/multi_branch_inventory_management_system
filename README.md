@@ -1,45 +1,49 @@
 # Multi-Branch Inventory & Stock Management System
 
-## How to run
+## Requirements
+- Python 3.9 or newer
+- Standard library only; no third-party packages required
+
+## Run
+```bash
+python main.py
+python -m unittest discover -v
 ```
-python main.py          # runs input_data.json, prints the dashboard + detailed reports, saves results.json
-python test_cases.py    # runs all the test cases
+
+## Modules
+- `main.py`: loads input, resumes durable state, processes only new transaction IDs, generates reports, saves state.
+- `models.py`: optional dataclasses compatible with Python 3.10+ and older type annotation style.
+- `utils.py`: validated JSON loading/saving and general-purpose helpers.
+- `validation.py`: catalog, branch, transaction, batch, stock, and return validation.
+- `inventory.py`: shared batch operations, FEFO deduction, transfers' lot support, and consistency checks.
+- `processing.py`: applies transactions once and stores transaction-time financial snapshots.
+- `transfering.py`: atomic branch transfers and complete physical-stock reconciliation.
+- `reports.py`: read-only reports; dashboard generation never reprocesses transactions.
+- `test_cases.py`: unittest coverage for transaction safety and reporting.
+
+## Data and behavior
+- `input_data.json` provides the initial catalog, branch inventory, opening batches, physical counts, and transaction feed.
+- `state.json` is created on the first successful run and stores current inventory, batch quantities, batch validation notes, and the transaction ledger.
+- `results.json` stores the transaction ledger.
+- Re-running `main.py` does not replay transaction IDs already in the ledger. To intentionally start over for a new demo, back up and remove `state.json` and `results.json`.
+- Batch quantities are kept consistent with aggregate stock. If initial stock has no lot records, the system creates opening lots with unknown expiry (`expiry_days: null`) rather than inventing expiry dates.
+- Opening batches with duplicate IDs, invalid fields, or quantities exceeding aggregate branch stock are rejected and listed in the report.
+- Sales use FEFO (first-expiring, first-out) and exclude batches known to be expired. Lots with unknown expiry can be sold after dated eligible lots.
+- Customer returns require `original_sale_id`, restore quantities to the original sale's batch allocations, and reverse the original transaction-time revenue, cost, and gross profit.
+- Sales store transaction-time unit price and cost so later catalog changes do not rewrite historical sales.
+- Reports are read-only. They calculate from current inventory and the existing ledger without mutating stock.
+- Reconciliation includes system products omitted from physical counts as `NOT_COUNTED`; unknown physical SKUs are flagged.
+- The JSON state file is suitable for a single-user learning project. It is not a substitute for database transactions, file locking, authentication, authorization, or concurrent-write handling in a multi-user production application.
+
+## Important workflow note
+Transactions in `input_data.json` are treated as an incoming feed. To add transactions, append records with new unique IDs. Existing IDs are skipped on subsequent runs. Customer return example:
+```json
+{
+  "id": "T005",
+  "type": "customer_return",
+  "branch": "B001",
+  "product": "P001",
+  "quantity": 2,
+  "original_sale_id": "T001"
+}
 ```
-
-## Files
-- `main.py` - loads the JSON file, runs the dashboard, prints the reports, saves `results.json`
-- `models.py` - dataclasses (`Product`, `Branch`, `Transaction`)
-- `utils.py` - `load_data`, `save_data`, `classify_batch`, `combine_inventories(*inventories)`
-- `validation.py` - all validation (transactions, stock, returns, batches)
-- `processing.py` - applies valid transactions to stock, builds the result of each transaction
-- `transfering.py` - `transfer_stock` and `reconcile_inventory`
-- `reports.py` - expiry, reorder, stock value, sales report, dashboard
-- `test_cases.py` - tests, `edge_cases_input.json` - deliberately bad data
-
-## Approach
-Data is kept in plain dictionaries. Every transaction goes through `validate_transaction` first.
-Only if it passes, the stock is changed (`process_sale`, `process_purchase`, `transfer_stock`, ...).
-The result is a dictionary with `SUCCESS` or `REJECTED` and a reason, and it is added to a list.
-
-## Inventory consistency logic
-1. Validate first: type, missing fields, duplicate ID, quantity, product, branch, stock.
-2. Change stock only after validation passes, in one small function.
-3. A sale, supplier return or transfer that is bigger than the available stock fails validation, so
-   stock can never go negative. A REJECTED transaction never touches the inventory.
-4. A customer return is checked against the earlier results: successful sales minus successful returns
-   for the same branch and product = remaining returnable quantity.
-5. The list of results processed so far is also used to find duplicate transaction IDs.
-
-## Python concepts used
-- Lists/dicts: inventory, results, reports. Sets: duplicate transaction IDs (`used_ids`) and duplicate batches (`seen_batches`).
-- Tuples: functions return `(valid, reason)`.
-- Comprehensions: missing fields, used IDs, company totals.
-- Lambda: `max`/`min` keys in `generate_sales_report`.
-- `*args`: `combine_inventories(*inventories)`. `**kwargs`: `make_result(..., **details)`.
-- LEGB: comment inside `generate_sales_report` (local `highest`, enclosing `units_sold`, built-in `max`/`sum`).
-
-## Assumptions
-- Customer returns are matched by branch + product (transactions have no sale id).
-- Revenue counts sales only; returns change stock but not revenue.
-- Reconciliation difference = system - physical (shortage is positive).
-- Expiry days of 0 = Expired; negative expiry days are rejected as invalid.
